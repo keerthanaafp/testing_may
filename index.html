@@ -553,6 +553,7 @@
       <li><a href="#secrets">Tenant-scoped secrets</a></li>
       <li><a href="#sheets">Sheets: filters, bulk ops, CSV import</a></li>
       <li><a href="#mobile-v3">Mobile: v3 design system migration</a></li>
+      <li><a href="#tap-to-pay">Mobile: Stripe Tap to Pay</a></li>
       <li><a href="#query-logs">Mobile: query logs & debugging</a></li>
       <li><a href="#design-refresh">Web: design refresh</a></li>
     </ol>
@@ -795,11 +796,54 @@
   </div>
 </section>
 
+<!-- ===== G. Stripe Tap to Pay ===== -->
+<section class="feature" id="tap-to-pay">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">G / 07</div>
+      <div class="feature-title-wrap">
+        <span class="tag new">New</span>
+        <span class="tag">Mobile · Payments</span>
+        <h2>Stripe Tap to Pay on mobile</h2>
+        <p class="subtitle">Real Stripe Terminal integration — secret key held on the backend, mobile never sees it.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          Tap to Pay moves from a mock/device-side flow to <strong>real Stripe Terminal</strong>, with the Stripe secret key held on the backend. Field technicians can accept card payments directly through the mobile app — and the device never holds <code>sk_*</code>.
+        </p>
+
+        <h3>How it works</h3>
+        <ul>
+          <li><strong>New backend endpoint</strong> <code>POST /stripe/terminal/connection-token</code> resolves <code>{{secrets.NAME}}</code> against <code>fp_as_secrets</code>, mints a Stripe Terminal connection token, and logs the secret-usage event on both success and failure.</li>
+          <li><strong>Mobile no longer holds the Stripe secret.</strong> The Stripe service takes a <code>fetchToken</code> callback that calls the backend; the ViewController passes secret <em>references</em> (<code>{{secrets.STRIPE_KEY}}</code>) instead of resolved values.</li>
+          <li><strong>Real Stripe <code>connection_tokens</code> API</strong> replaces the previous mock, with simulator mode via <code>stripe_simulated</code> for development without NFC hardware.</li>
+          <li><strong>Configurable timeout</strong> via <code>timeout_seconds</code>; collection starts before the tap prompt so the reader is ready.</li>
+          <li><strong>Both <code>succeeded</code> and <code>requires_capture</code></strong> outcomes are treated as success.</li>
+          <li><strong>Docs published</strong> — new <code>tap_to_pay</code> action reference, setup checklist, and error table in the docs site and in-app docs.</li>
+        </ul>
+
+        <div class="callout">
+          <span class="label">Security note</span>
+          The raw Stripe secret key now lives only in <code>fp_as_secrets</code> on the backend. A network inspector on the mobile device should only see the connection-token call to our backend — not a direct Stripe API call carrying <code>sk_*</code>.
+        </div>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Simulator path with <code>stripe_simulated: true</code>, real device path verifying no <code>sk_*</code> ever leaves the backend, misconfigured secret-name error handling, <code>requires_capture</code> as success, timeout expiry, and secret-usage audit log entries on both success and failure.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== H. Query Logs ===== -->
 <section class="feature" id="query-logs">
   <div class="container">
     <div class="feature-head">
-      <div class="feature-num">G / 07</div>
+      <div class="feature-num">H / 08</div>
       <div class="feature-title-wrap">
         <span class="tag new">New</span>
         <span class="tag">Mobile · Devtools</span>
@@ -834,7 +878,7 @@
 <section class="feature" id="design-refresh">
   <div class="container">
     <div class="feature-head">
-      <div class="feature-num">H / 08</div>
+      <div class="feature-num">I / 09</div>
       <div class="feature-title-wrap">
         <span class="tag">Web</span>
         <span class="tag">Design</span>
@@ -888,7 +932,7 @@
     <span class="upcoming-label">↗ Coming next week</span>
     <h2>In <em>flight</em> for next release.</h2>
     <p class="intro">
-      Three items currently in QA — landing in the next release window. Sharing early so teams can prepare integrations, training, and rollout plans.
+      Two larger items currently in QA — landing in the next release window. Sharing early so teams can prepare integrations, training, and rollout plans.
     </p>
 
     <div class="upcoming-grid">
@@ -926,24 +970,6 @@
           <li>Backend endpoint returns 403 when the flag is off — no UI-only gate</li>
           <li>Preview module isolated so rejected suggestions never mutate the JSON</li>
           <li>Network drop mid-prompt fails closed: no partial edits applied</li>
-        </ul>
-      </div>
-
-      <!-- Card 3: Tap to Pay -->
-      <div class="upcoming-card">
-        <span class="tag">Preview</span>
-        <span class="tag preview">Mobile · Payments</span>
-        <h3>Stripe Tap to Pay on mobile</h3>
-        <p class="subtitle">Take card payments directly inside the field-service flow — no separate terminal.</p>
-        <p>
-          Field technicians will be able to <strong>accept card payments directly through the mobile app</strong> using a paired Stripe Tap to Pay reader, with full simulator mode for development and demos.
-        </p>
-        <ul>
-          <li>Real Stripe API integration replacing the previous mock</li>
-          <li>Simulator mode toggle for testing without a physical reader</li>
-          <li>Location ID passed through so charges land in the correct Stripe location</li>
-          <li>Stacked dialogs unwind cleanly on success — no orphaned modals</li>
-          <li>Clear error messaging on declines, network drops, and pairing failures</li>
         </ul>
       </div>
 
