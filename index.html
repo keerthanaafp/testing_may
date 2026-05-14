@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fieldproxy — This Week in Product · May 8–14, 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:wght@400;500;600&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --paper: #f5f1ea;
+    --paper-warm: #ebe5d8;
+    --accent: #ff5b1f;
+    --accent-soft: #ffe4d6;
+    --rule: #1a1a1a;
+    --muted: #6b6258;
+    --tag-bg: #1a1a1a;
+    --tag-ink: #f5f1ea;
+    --shadow: 0 2px 0 var(--ink);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+  /* ===== Top bar ===== */
+  .topbar {
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 14px 0;
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(6px);
+  }
+  .topbar-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .topbar-inner .dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  /* ===== Hero ===== */
+  .hero { padding: 80px 0 60px; position: relative; }
+  .hero .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero .kicker::before {
+    content: ''; width: 32px; height: 2px; background: var(--accent);
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin-bottom: 28px;
+    font-variation-settings: "opsz" 144;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 300;
+  }
+  .hero .lede {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(20px, 2.2vw, 24px);
+    font-weight: 300;
+    line-height: 1.45;
+    max-width: 720px;
+    color: var(--muted);
+  }
+  .hero .meta {
+    margin-top: 48px;
+    display: flex; flex-wrap: wrap; gap: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .hero .meta div { display: flex; flex-direction: column; gap: 4px; }
+  .hero .meta .label {
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+    font-size: 11px;
+  }
+  .hero .meta .value { font-weight: 600; color: var(--ink); }
+
+  /* ===== TOC ===== */
+  .toc {
+    margin: 24px 0 80px;
+    padding: 32px;
+    background: var(--paper-warm);
+    border: 2px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .toc h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 20px; color: var(--muted);
+  }
+  .toc ol {
+    list-style: none;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 6px 24px;
+    counter-reset: toc;
+  }
+  .toc ol li { counter-increment: toc; }
+  .toc ol li a {
+    display: flex; align-items: baseline; gap: 12px;
+    text-decoration: none; color: var(--ink);
+    padding: 8px 0;
+    border-bottom: 1px dashed transparent;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    transition: all 0.15s ease;
+  }
+  .toc ol li a::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .toc ol li a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    padding-left: 4px;
+  }
+
+  /* ===== Features ===== */
+  .feature {
+    padding: 80px 0;
+    border-top: 2px solid var(--ink);
+    position: relative;
+  }
+  .feature-head {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 24px;
+    align-items: start;
+    margin-bottom: 40px;
+  }
+  .feature-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    padding-top: 14px;
+    border-top: 3px solid var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .feature-title-wrap .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--tag-bg);
+    color: var(--tag-ink);
+    padding: 5px 10px;
+    margin-bottom: 16px;
+    margin-right: 6px;
+  }
+  .feature-title-wrap .tag.new { background: var(--accent); }
+  .feature-title-wrap .tag.beta { background: #c89f3a; }
+  .feature-title-wrap h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .feature-title-wrap .subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .feature-body {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 24px;
+  }
+  .feature-body .spacer { /* aligns with number column */ }
+  .feature-content { max-width: 740px; }
+
+  .feature-content p {
+    margin-bottom: 18px;
+    font-size: 17px;
+  }
+  .feature-content p strong {
+    background: linear-gradient(transparent 65%, var(--accent-soft) 65%);
+    padding: 0 2px;
+    font-weight: 600;
+  }
+  .feature-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    background: var(--paper-warm);
+    padding: 2px 6px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 3px;
+  }
+  .feature-content h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+  .feature-content ul {
+    list-style: none;
+    margin-bottom: 18px;
+  }
+  .feature-content ul li {
+    padding: 8px 0 8px 24px;
+    position: relative;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .feature-content ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .feature-content ul li:last-child { border-bottom: none; }
+
+  .callout {
+    margin: 24px 0;
+    padding: 20px 24px;
+    background: var(--paper-warm);
+    border-left: 4px solid var(--accent);
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    margin-top: 60px;
+    padding: 60px 0;
+    border-top: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
+  footer .brand {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-style: italic;
+  }
+  footer .meta-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--paper-warm);
+    opacity: 0.7;
+  }
+
+  /* ===== Week block separator ===== */
+  .week {
+    padding-bottom: 80px;
+  }
+  .week + .week {
+    border-top: 8px double var(--ink);
+    margin-top: 40px;
+    padding-top: 0;
+  }
+  .week-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 40px 0 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .week-divider::before,
+  .week-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0.3;
+  }
+
+  /* ===== Coming next week (preview) ===== */
+  .upcoming {
+    margin: 60px 0 0;
+    padding: 48px 0 60px;
+    border-top: 2px dashed var(--ink);
+    position: relative;
+  }
+  .upcoming-label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    background: var(--paper);
+    padding: 4px 14px;
+    border: 1px solid var(--ink);
+    margin-bottom: 32px;
+  }
+  .upcoming h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4vw, 44px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .upcoming h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 300;
+  }
+  .upcoming > .container > p.intro {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.45;
+    max-width: 680px;
+    margin-bottom: 40px;
+  }
+  .upcoming-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .upcoming-card {
+    background: var(--paper-warm);
+    border: 1px solid var(--ink);
+    padding: 28px;
+    position: relative;
+  }
+  .upcoming-card .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--tag-bg);
+    color: var(--tag-ink);
+    padding: 4px 9px;
+    margin-bottom: 14px;
+    margin-right: 4px;
+  }
+  .upcoming-card .tag.preview {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .upcoming-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .upcoming-card .subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .upcoming-card p {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .upcoming-card p:last-child { margin-bottom: 0; }
+  .upcoming-card ul {
+    list-style: none;
+    margin-top: 8px;
+  }
+  .upcoming-card ul li {
+    padding: 6px 0 6px 20px;
+    position: relative;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .upcoming-card ul li:last-child { border-bottom: none; }
+  .upcoming-card ul li::before {
+    content: '○';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  .upcoming-card code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--paper);
+    padding: 1px 5px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 3px;
+  }
+
+  /* ===== What to test (compact callout) ===== */
+  .test-block {
+    margin: 28px 0 8px;
+    padding: 16px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .test-block .test-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    font-weight: 600;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .test-block .test-label::before {
+    content: '✓';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    background: var(--accent);
+    color: var(--ink);
+    font-weight: 900;
+    font-size: 11px;
+  }
+  .test-block .test-text {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--paper);
+    flex: 1;
+    min-width: 240px;
+  }
+  .test-block .test-text code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: rgba(255, 91, 31, 0.18);
+    color: var(--paper);
+    padding: 1px 5px;
+    border: none;
+    border-radius: 2px;
+  }
+
+  /* ===== Reveal animation ===== */
+  .feature { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .feature.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 700px) {
+    .container { padding: 0 20px; }
+    .feature-head, .feature-body { grid-template-columns: 1fr; gap: 12px; }
+    .feature-num { padding-top: 8px; }
+    .hero { padding: 50px 0 40px; }
+    .toc { padding: 24px; box-shadow: 4px 4px 0 var(--ink); }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <span><span class="dot"></span>Fieldproxy / Changelog</span>
+    <span>Week of May 14, 2026</span>
+  </div>
+</header>
+
+<!--
+  =====================================================================
+  HOW TO ADD A NEW WEEK
+  =====================================================================
+  Each week is one <section class="week"> ... </section> block.
+  To add next week's update:
+    1. Copy the entire <section class="week" id="week-YYYY-MM-DD"> block
+       below (including its hero, TOC, and feature sections).
+    2. Paste it ABOVE the existing week so the newest week is on top.
+    3. Update the id, dates, kicker, lede, meta values, TOC items,
+       and feature sections with the new week's content.
+    4. Update the topbar's "Week of …" text to match the latest week.
+  =====================================================================
+-->
+
+<!-- ========== WEEK: May 8 – May 14, 2026 ========== -->
+<section class="week" id="week-2026-05-14">
+
+<section class="hero">
+  <div class="container">
+    <div class="kicker">Product Release Notes</div>
+    <h1>Updates <em>this</em> week.</h1>
+    <p class="lede">
+      A summary of features, improvements, and fixes shipped across web, mobile, backend, and portal between May 8 and May 14, 2026.
+    </p>
+  </div>
+</section>
+
+<div class="container">
+  <nav class="toc">
+    <h2>↓ In this release</h2>
+    <ol>
+      <li><a href="#json-preview">App builder: preview on save</a></li>
+      <li><a href="#json-undo">App builder: undo (Ctrl+Z) in JSON editor</a></li>
+      <li><a href="#portal">Portal: members, roles, audit log</a></li>
+      <li><a href="#secrets">Tenant-scoped secrets</a></li>
+      <li><a href="#sheets">Sheets: filters, bulk ops, CSV import</a></li>
+      <li><a href="#mobile-v3">Mobile: v3 design system migration</a></li>
+      <li><a href="#query-logs">Mobile: query logs & debugging</a></li>
+      <li><a href="#design-refresh">Web: design refresh</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ===== A. JSON Preview on Save ===== -->
+<section class="feature" id="json-preview">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">A / 01</div>
+      <div class="feature-title-wrap">
+        <span class="tag new">New</span>
+        <span class="tag">App Builder</span>
+        <h2>Preview your changes on save</h2>
+        <p class="subtitle">A preview option in the JSON view editor — click to see the change live, right after saving.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          When editing a view's JSON in the app builder, you now get a <strong>preview option</strong>. After saving, simply click <em>Preview</em> to view the changes in their rendered state — no need to leave the editor, switch tabs, or reload the app to verify how the edit looks.
+        </p>
+        <p>
+          This shortens the edit-save-check loop dramatically, especially when iterating on layout, conditional visibility, or widget configuration.
+        </p>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Preview button visibility after a save, accurate rendering of the saved JSON, and behaviour when previewing an unsaved or invalid JSON state.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== B. Undo (Ctrl+Z) in JSON Editor ===== -->
+<section class="feature" id="json-undo">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">B / 02</div>
+      <div class="feature-title-wrap">
+        <span class="tag new">New</span>
+        <span class="tag">App Builder</span>
+        <h2>Undo support in the JSON editor</h2>
+        <p class="subtitle"><code>Ctrl + Z</code> now reverts JSON edits — even after a change has been applied.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          <strong>Undo</strong> has been brought into the JSON view editor. Press <code>Ctrl + Z</code> (or <code>⌘ + Z</code> on macOS) to step back to the previous JSON state — even after you've made a change to the view. No more manually re-typing or copying the old config back.
+        </p>
+        <p>
+          This works in tandem with the new preview option: tweak the JSON, hit preview, decide you don't like it, and <code>Ctrl + Z</code> brings you back to where you started.
+        </p>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Single-step undo, multi-step undo through a chain of edits, behaviour after a save, and macOS shortcut (<code>⌘ + Z</code>) parity.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== C. Portal ===== -->
+<section class="feature" id="portal">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">C / 03</div>
+      <div class="feature-title-wrap">
+        <span class="tag new">New</span>
+        <span class="tag">Portal</span>
+        <h2>Portal members, RBAC, audit log &amp; password change</h2>
+        <p class="subtitle">The internal Portal is no longer a single-user tool — full team management has landed.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          Four related Portal features shipped together and should be treated as one system:
+        </p>
+
+        <h3>What's new</h3>
+        <ul>
+          <li><strong>Members management</strong> — invite teammates into Portal, assign a role, remove them. Sessions invalidate immediately on removal.</li>
+          <li><strong>Role-based access control (RBAC)</strong> — three tiers: <code>owner</code>, <code>admin</code>, <code>read-only</code>. Enforced in the UI <em>and</em> on the backend — a read-only member calling an admin endpoint directly will get rejected.</li>
+          <li><strong>Audit log</strong> — every meaningful Portal action (member added, integration disconnected, AI flag toggled, etc.) is recorded with actor, target, timestamp, and a drill-in for details.</li>
+          <li><strong>Change password</strong> — Portal members can now rotate their own password from the new modal; the backend validates the current password and enforces password strength rules.</li>
+        </ul>
+
+        <div class="callout">
+          <span class="label">Why it matters</span>
+          Until this week, everyone with Portal access had god-mode. From now on, customer-facing
+          ops people can be granted read-only access without risk of accidentally
+          force-disconnecting a tenant's integration.
+        </div>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Member invite and removal, role enforcement (UI and backend), password change, and audit log entries.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== D. Secrets ===== -->
+<section class="feature" id="secrets">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">D / 04</div>
+      <div class="feature-title-wrap">
+        <span class="tag new">New</span>
+        <span class="tag">Security</span>
+        <h2>Tenant-scoped secrets management</h2>
+        <p class="subtitle">Stop pasting API keys into action configs. Reference them by name; we resolve them server-side.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          Admins can now create encrypted secrets per tenant under
+          <code>Settings → Secrets</code> and reference them inside any server-routed API
+          action as <code>{{secrets.NAME}}</code>. Substitution happens on the backend just
+          before the outbound HTTP request fires — <strong>the plaintext value never reaches
+          the browser or the mobile device</strong>.
+        </p>
+
+        <h3>The rules</h3>
+        <ul>
+          <li><strong>Write-only.</strong> Once a secret is saved, no client can read it back. You can rename, replace, or delete — but never view.</li>
+          <li><strong>Admin-only.</strong> Non-admins get 403 on the settings page and on the API.</li>
+          <li><strong>Server-routed only.</strong> Secrets resolve inside the <code>/data/serverAPICall</code> endpoint. A plain browser-side <code>api</code> action would send the literal <code>{{secrets.NAME}}</code> string upstream — so always route secret-bearing calls through the server proxy.</li>
+          <li><strong>Missing secret = 400.</strong> If a referenced secret doesn't exist, the request is rejected with <code>Unknown secret(s): NAME</code> and is never dispatched.</li>
+        </ul>
+
+        <div class="callout">
+          <span class="label">Mobile</span>
+          The mobile app picked up matching docs for the same syntax — Stripe keys, signing
+          secrets, etc., all live server-side and get substituted in transit.
+        </div>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Secret creation, admin-only visibility, server-side substitution in <code>api</code> actions, and missing-secret error handling.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== E. Sheets ===== -->
+<section class="feature" id="sheets">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">E / 05</div>
+      <div class="feature-title-wrap">
+        <span class="tag">Sheets</span>
+        <span class="tag">Improvement</span>
+        <h2>Filters, bulk operations &amp; smarter CSV import</h2>
+        <p class="subtitle">Sheets gets the heavy-data improvements you've been asking for.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          Sheets has had a meaningful upgrade across filtering, selection, and import:
+        </p>
+
+        <h3>What's new</h3>
+        <ul>
+          <li><strong>Advanced multi-rule filtering</strong> — add multiple filter rules that combine with AND across mixed column types (string, number, date, multi-select). Each operator is column-type aware.</li>
+          <li><strong>Date filters now match the full day.</strong> Setting <code>date == 2026-05-12</code> matches every row on that day rather than requiring an exact timestamp match.</li>
+          <li><strong>Bulk actions on multi-select.</strong> Checkbox-select rows in any list widget, then run bulk delete, bulk update, or any custom action across all selected rows.</li>
+          <li><strong>Pagination as a first-class widget</strong> — extracted from the data grid so you can choose page sizes (10 / 50 / 200) consistently, with horizontal scrollbar always visible on wide tables.</li>
+          <li><strong>CSV import accepts blank IDs.</strong> If your CSV has no <code>id</code> column or leaves it empty, the backend now auto-generates IDs instead of rejecting the row.</li>
+          <li><strong>Schema reconcile</strong> — from Portal you can compare a saved sheet config against the live DB schema and resolve any drift.</li>
+          <li><strong>Admin-gated.</strong> Sheets is now hidden from non-admin users to prevent accidental schema edits.</li>
+        </ul>
+
+        <div class="callout">
+          <span class="label">Re-import caveat</span>
+          Re-importing the same CSV will currently <em>not</em> dedupe against existing rows — confirm with product whether idempotent re-imports are part of the intended behaviour.
+        </div>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Multi-rule filters across column types, date day-range matching, bulk actions, pagination, blank-ID CSV import, and admin gating.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== G. Mobile v3 ===== -->
+<section class="feature" id="mobile-v3">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">F / 06</div>
+      <div class="feature-title-wrap">
+        <span class="tag">Mobile</span>
+        <span class="tag">Design</span>
+        <h2>Mobile v3 design-system migration</h2>
+        <p class="subtitle">The whole mobile app moves onto the new design language — fresh colors, fresh components.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          Almost every surface in the mobile app was migrated to the v3 design system this
+          week. It ships as part of <strong>build 1.0.15</strong>.
+        </p>
+
+        <h3>Surfaces migrated</h3>
+        <ul>
+          <li><strong>Auth screens</strong> — login + forgot password, with refreshed colors and reusable auth components.</li>
+          <li><strong>Forms</strong> — text, number, dropdown, multi-select all on v3.</li>
+          <li><strong>Image input</strong> — capture + upload redesigned.</li>
+          <li><strong>Dialogs</strong> — confirm, info, error variants standardised.</li>
+          <li><strong>Signature</strong> — rewritten as a stateful widget on v3.</li>
+          <li><strong>Splash screen</strong> — new staggered launch animation that doesn't block first paint.</li>
+          <li><strong>Copy-on-tap text</strong> — long-press any displayed value to copy it.</li>
+          <li><strong>Android SDK + iOS build cleanup</strong> with version bump to <code>1.0.15</code>.</li>
+        </ul>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Visual and functional regression on auth, forms, image input, dialogs, signature, splash, and copy-on-tap across Android and iOS.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== H. Query Logs ===== -->
+<section class="feature" id="query-logs">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">G / 07</div>
+      <div class="feature-title-wrap">
+        <span class="tag new">New</span>
+        <span class="tag">Mobile · Devtools</span>
+        <h2>Mobile query logs &amp; debugging</h2>
+        <p class="subtitle">A built-in network panel for the mobile app — see what queries fired, with what params.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          A new <strong>in-app query log panel</strong> on mobile shows every data request
+          with its parameters, status, and timing. Pair it with the existing color-conditional
+          widgets and you can now spot a rogue query in seconds.
+        </p>
+        <p>
+          Underneath, color queries are now <strong>deduplicated</strong> and the cache
+          invalidates correctly when a row changes — so a list rapidly switching colors no
+          longer hammers the backend.
+        </p>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Query log panel surfacing requests with params and timing, plus color-query dedup and cache invalidation.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== I. Design Refresh ===== -->
+<section class="feature" id="design-refresh">
+  <div class="container">
+    <div class="feature-head">
+      <div class="feature-num">H / 08</div>
+      <div class="feature-title-wrap">
+        <span class="tag">Web</span>
+        <span class="tag">Design</span>
+        <h2>Web design refresh &amp; cross-cutting polish</h2>
+        <p class="subtitle">The web app gets a new visual identity and a long list of widget-level fixes.</p>
+      </div>
+    </div>
+    <div class="feature-body">
+      <div class="spacer"></div>
+      <div class="feature-content">
+        <p>
+          The web app has a refreshed look — <strong>new color palette, new typography, new
+          SVG logo lockup</strong>, and a split-layout login screen. Underneath the visual
+          work, a lot of widgets got fixed at the same time.
+        </p>
+
+        <h3>Notable fixes &amp; polish</h3>
+        <ul>
+          <li><strong>Map widget</strong> — the long-standing Leaflet grey-tile bug on Chrome web is fixed; zoom now respects bounds.</li>
+          <li><strong>Pivot tables</strong> — pivot layouts no longer clip on many-column tables.</li>
+          <li><strong>HTML display widget</strong> — supports internal scroll via <code>enable_scroll</code> for long embedded HTML.</li>
+          <li><strong>Query debugger (web)</strong> — parameter dialog rebuilt; reactive updates no longer get eaten by web pointer-interception bugs.</li>
+          <li><strong>Navigation</strong> — <code>auto_route</code> path-keying fixes, no more unintended route pops on back-navigation.</li>
+          <li><strong>Buttons</strong> — uniform heights via <code>minimumSize</code>; primary button text-color contrast corrected.</li>
+          <li><strong>Date picker &amp; shared dialog primitives</strong> — consistent styling across the app.</li>
+          <li><strong>Public-access</strong> — encrypted-args flow hardened; debug logs gated to non-production.</li>
+          <li><strong>Docs route</strong> — <code>/docs</code> is blocked in production builds, allowed on staging.</li>
+        </ul>
+
+        <div class="callout">
+          <span class="label">Misc</span>
+          A few smaller things also landed: a regex-escape fix in pattern matching,
+          OpenRouter + Mail Vault environment keys, a Portal favicon refresh,
+          <code>react-router-dom</code> pinned to v6 with an <code>.nvmrc</code>, an extracted
+          logout dialog on mobile, and new docs entries for
+          <code>prevent_double_click</code> + secrets substitution.
+        </div>
+
+        <div class="test-block">
+          <span class="test-label">What to test</span>
+          <span class="test-text">Cross-browser visual regression (Chrome and Safari) on login, branding, buttons, map widget, pivot tables, HTML display, navigation, query debugger, public-access, and docs route gating.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Coming next week ===== -->
+<section class="upcoming">
+  <div class="container">
+    <span class="upcoming-label">↗ Coming next week</span>
+    <h2>In <em>flight</em> for next release.</h2>
+    <p class="intro">
+      Three items currently in QA — landing in the next release window. Sharing early so teams can prepare integrations, training, and rollout plans.
+    </p>
+
+    <div class="upcoming-grid">
+
+      <!-- Card 1: QuickBooks -->
+      <div class="upcoming-card">
+        <span class="tag">Preview</span>
+        <span class="tag preview">Integration</span>
+        <h3>QuickBooks Online integration</h3>
+        <p class="subtitle">Our first marketplace integration — two-way sync, OAuth, webhooks.</p>
+        <p>
+          Connect a Fieldproxy tenant to a QuickBooks Online account and keep <strong>customers, invoices, and payments in sync both ways</strong>. The first integration to flow through our new master gateway and webhook router — the pattern for everything we build next (Salesforce, HubSpot, Xero).
+        </p>
+        <ul>
+          <li>In-app OAuth setup wizard under <code>Integrations → QuickBooks</code></li>
+          <li>Tokens encrypted in the new secrets store, not the legacy keyvalue table</li>
+          <li>Field-by-field mapping from Fieldproxy sheets to QBO Customers / Invoices</li>
+          <li>Payments in QBO arrive via webhook and mark the linked invoice as <code>paid</code></li>
+          <li>Portal-side force-disconnect for support intervention</li>
+        </ul>
+      </div>
+
+      <!-- Card 2: AI Editor -->
+      <div class="upcoming-card">
+        <span class="tag">Preview</span>
+        <span class="tag preview">AI · Beta</span>
+        <h3>AI JSON editor, powered by Claude</h3>
+        <p class="subtitle">A chat assistant inside the view editor that writes and edits JSON for you.</p>
+        <p>
+          A <strong>Claude-powered chat assistant directly inside the JSON editor</strong>. Type a natural-language instruction like <em>"add a required phone field to the customer form"</em>; the assistant proposes a diff in the JSON preview panel. Accept or reject.
+        </p>
+        <ul>
+          <li>Gated behind a per-user feature flag (<code>fp_as_feature_flags</code>)</li>
+          <li>Portal admins toggle access per user from the new AI editor access modal</li>
+          <li>Backend endpoint returns 403 when the flag is off — no UI-only gate</li>
+          <li>Preview module isolated so rejected suggestions never mutate the JSON</li>
+          <li>Network drop mid-prompt fails closed: no partial edits applied</li>
+        </ul>
+      </div>
+
+      <!-- Card 3: Tap to Pay -->
+      <div class="upcoming-card">
+        <span class="tag">Preview</span>
+        <span class="tag preview">Mobile · Payments</span>
+        <h3>Stripe Tap to Pay on mobile</h3>
+        <p class="subtitle">Take card payments directly inside the field-service flow — no separate terminal.</p>
+        <p>
+          Field technicians will be able to <strong>accept card payments directly through the mobile app</strong> using a paired Stripe Tap to Pay reader, with full simulator mode for development and demos.
+        </p>
+        <ul>
+          <li>Real Stripe API integration replacing the previous mock</li>
+          <li>Simulator mode toggle for testing without a physical reader</li>
+          <li>Location ID passed through so charges land in the correct Stripe location</li>
+          <li>Stacked dialogs unwind cleanly on success — no orphaned modals</li>
+          <li>Clear error messaging on declines, network drops, and pairing failures</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</section>
+<!-- ========== END WEEK: May 8 – May 14, 2026 ========== -->
+
+
+<!-- ========== WEEK: May 1 – May 7, 2026 ========== -->
+<section class="week" id="week-2026-05-07">
+
+  <div class="week-divider">
+    <span>← Previous release</span>
+  </div>
+
+  <section class="hero">
+    <div class="container">
+      <div class="kicker">Product Release Notes</div>
+      <h1>Updates from <em>last</em> week.</h1>
+      <p class="lede">
+        A summary of features and fixes shipped between May 1 and May 7, 2026 — charts, sheets, and the inline HTML viewer on mobile.
+      </p>
+      <div class="meta">
+        <div>
+          <span class="label">Window</span>
+          <span class="value">May 1 → May 7, 2026</span>
+        </div>
+        <div>
+          <span class="label">Feature areas</span>
+          <span class="value">4</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <nav class="toc">
+      <h2>↓ In this release</h2>
+      <ol>
+        <li><a href="#horizontal-bar-chart">Horizontal bar chart variant</a></li>
+        <li><a href="#bar-chart-labels">Bar chart label fixes</a></li>
+        <li><a href="#sheets-prev">Sheets — new internal management UI</a></li>
+        <li><a href="#html-viewer">Mobile HTML viewer (HTML Display widget)</a></li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- ===== A. Horizontal Bar Chart ===== -->
+  <section class="feature" id="horizontal-bar-chart">
+    <div class="container">
+      <div class="feature-head">
+        <div class="feature-num">A / 01</div>
+        <div class="feature-title-wrap">
+          <span class="tag new">New</span>
+          <span class="tag">Charts</span>
+          <h2>Horizontal bar chart variant</h2>
+          <p class="subtitle">A new chart orientation for category-heavy data and long labels.</p>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="spacer"></div>
+        <div class="feature-content">
+          <p>
+            The bar chart widget now supports a <strong>horizontal orientation</strong> in addition to the existing vertical layout. Use it when you have many categories, long category names, or want to emphasize ranking — bars extending rightward read more naturally than rotated x-axis labels.
+          </p>
+
+          <h3>When to use it</h3>
+          <ul>
+            <li><strong>Long category labels</strong> — labels sit flush on the y-axis with full breathing room, no rotation or truncation.</li>
+            <li><strong>Many categories</strong> — vertical scrolling handles tall lists better than horizontal scrolling on narrow screens.</li>
+            <li><strong>Ranking visualizations</strong> — top-N leaderboards, sorted comparisons, or any "biggest to smallest" display.</li>
+          </ul>
+
+          <div class="test-block">
+            <span class="test-label">What to test</span>
+            <span class="test-text">Horizontal rendering with long labels, many categories, and on narrow viewports.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== B. Bar Chart Labels Fix ===== -->
+  <section class="feature" id="bar-chart-labels">
+    <div class="container">
+      <div class="feature-head">
+        <div class="feature-num">B / 02</div>
+        <div class="feature-title-wrap">
+          <span class="tag">Fix</span>
+          <span class="tag">Charts</span>
+          <h2>Existing bar chart labels — fixed</h2>
+          <p class="subtitle">Long labels now wrap and stay readable; axis labels no longer clip.</p>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="spacer"></div>
+        <div class="feature-content">
+          <p>
+            A set of long-standing rendering issues in the vertical bar chart were resolved this week. Previously, long category names would clip at the edge of the chart area or overlap adjacent labels — both now handled cleanly.
+          </p>
+
+          <h3>What was fixed</h3>
+          <ul>
+            <li><strong>Long labels wrap correctly</strong> on multiple lines instead of being truncated mid-word.</li>
+            <li><strong>Axis labels no longer clip</strong> at the chart bounds; spacing is recalculated based on the longest visible label.</li>
+            <li><strong>Consistent vertical alignment</strong> across bars of varying heights — wrapped labels align to a shared baseline.</li>
+          </ul>
+
+          <div class="test-block">
+            <span class="test-label">What to test</span>
+            <span class="test-text">Long-label wrapping, axis clipping, and label alignment across bars of varying heights.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== C. Sheets ===== -->
+  <section class="feature" id="sheets-prev">
+    <div class="container">
+      <div class="feature-head">
+        <div class="feature-num">C / 03</div>
+        <div class="feature-title-wrap">
+          <span class="tag new">New</span>
+          <span class="tag">Sheets · Internal</span>
+          <h2>Sheets — new internal management UI</h2>
+          <p class="subtitle">Sheets management has moved to the internal portal for the team.</p>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="spacer"></div>
+        <div class="feature-content">
+          <p>
+            A new Sheets management surface has shipped inside the <strong>internal portal</strong>. This is the foundation that this week's tenant-facing Sheets work (filtering, bulk ops, CSV import) was built on top of.
+          </p>
+
+          <div class="callout">
+            <span class="label">Access</span>
+            Internal portal → <a href="https://internal-portal-as46.onrender.com/" target="_blank" rel="noopener" style="color: var(--accent); font-weight: 600; text-decoration: underline;">internal-portal-as46.onrender.com</a><br />
+            Credentials: ask <strong>Swaroop</strong>.
+          </div>
+
+          <p>
+            The portal is the source-of-truth for inspecting, configuring, and reconciling sheets across tenants. If you're debugging a customer's sheet schema or rolling out a config change, start here.
+          </p>
+
+          <div class="test-block">
+            <span class="test-label">What to test</span>
+            <span class="test-text">Portal login, sheet config inspection, edits, and schema reconcile flow.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== D. HTML Viewer ===== -->
+  <section class="feature" id="html-viewer">
+    <div class="container">
+      <div class="feature-head">
+        <div class="feature-num">D / 04</div>
+        <div class="feature-title-wrap">
+          <span class="tag new">New</span>
+          <span class="tag">Mobile</span>
+          <span class="tag">Widget</span>
+          <h2>Mobile HTML Display widget</h2>
+          <p class="subtitle">An inline HTML renderer for the mobile app — auto-sizing, themable, JS-capable.</p>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="spacer"></div>
+        <div class="feature-content">
+          <p>
+            A new <code>html_display</code> widget that <strong>renders raw HTML inline on mobile</strong>. Use it for rich text, formatted reports, or any server-generated markup that needs to live inside a view.
+          </p>
+
+          <h3>What it does</h3>
+          <ul>
+            <li><strong>Auto-sizes to content</strong> — measures the rendered height and resizes itself. Pass a fixed <code>height</code> if you want to override.</li>
+            <li><strong>Accepts fragments or full documents</strong> — pass <code>&lt;p&gt;Hello&lt;/p&gt;</code> and it inherits your chosen styling; pass a full <code>&lt;!DOCTYPE&gt;</code> document and it loads as-is.</li>
+            <li><strong>Themable</strong> — control <code>background_color</code>, <code>text_color</code>, <code>link_color</code>, <code>font_size</code>, <code>font_family</code>, and <code>content_padding</code>, or inject custom rules via <code>css</code>.</li>
+            <li><strong>Template-aware</strong> — supports <code>{{}}</code> and <code>&lt;!...!&gt;</code> syntax inside the HTML, so values bind dynamically.</li>
+            <li><strong>JS + zoom toggles</strong> — <code>enable_js</code> (default on) and <code>enable_zoom</code> (default off).</li>
+            <li><strong>Conditionally visible</strong> via <code>visibility_condition</code>, like other widgets.</li>
+          </ul>
+
+          <div class="test-block">
+            <span class="test-label">What to test</span>
+            <span class="test-text">Fragment and full-document rendering, auto-sizing vs fixed height, theming fields, template substitution, and visibility conditions.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</section>
+<!-- ========== END WEEK: May 1 – May 7, 2026 ========== -->
+
+
+<footer>
+  <div class="container">
+    <div class="brand">Fieldproxy</div>
+    <div class="meta-line">Internal release notes · Fieldproxy product team</div>
+  </div>
+</footer>
+
+<script>
+  // Reveal sections on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.feature').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
