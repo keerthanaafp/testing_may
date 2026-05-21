@@ -523,7 +523,7 @@
     <div class="kicker">Product Release Notes</div>
     <h1>Updates <em>this</em> week.</h1>
     <p class="lede">
-      A summary of features, improvements, and fixes shipped across web, mobile, backend, and portal between May 14 and May 21, 2026.
+      What changed across web, mobile, backend, and portal between May 14 and May 21, 2026.
     </p>
     <div class="meta">
       <div>
@@ -532,7 +532,7 @@
       </div>
       <div>
         <span class="label">Feature areas</span>
-        <span class="value">11</span>
+        <span class="value">10</span>
       </div>
       <div>
         <span class="label">Repos touched</span>
@@ -546,17 +546,16 @@
   <nav class="toc">
     <h2>↓ In this release</h2>
     <ol>
-      <li><a href="#product-catalogue">Mobile: product catalogue input</a></li>
-      <li><a href="#chat">Chat: multi-capture, attachments &amp; ordering</a></li>
-      <li><a href="#tap-to-pay">Mobile: Tap to Pay — server-side tokens</a></li>
+      <li><a href="#product-catalogue">Mobile: product catalogue</a></li>
+      <li><a href="#chat">Chat: photos &amp; ordering</a></li>
+      <li><a href="#tap-to-pay">Mobile: Tap to Pay — safer setup</a></li>
       <li><a href="#offline">Mobile: offline mode</a></li>
-      <li><a href="#auth-deep-links">Web: deep links &amp; URL query args</a></li>
-      <li><a href="#back-nav">Web: back-navigation refresh queue</a></li>
-      <li><a href="#sheets">Sheets: AND/OR filter connectors</a></li>
-      <li><a href="#widgets">Widgets: TieredOptions, ExpandableCard, HTML iframe</a></li>
-      <li><a href="#team-members">Web: team members search</a></li>
-      <li><a href="#quickbooks-nango">QuickBooks → Nango migration</a></li>
-      <li><a href="#backend-platform">Backend: rate limits, regions &amp; polish</a></li>
+      <li><a href="#auth-deep-links">Web: login links &amp; URL settings</a></li>
+      <li><a href="#back-nav">Web: lists refresh after edits</a></li>
+      <li><a href="#sheets">Sheets: AND / OR in filters</a></li>
+      <li><a href="#widgets">Widgets: 2 new + HTML fix</a></li>
+      <li><a href="#team-members">Web: search team members</a></li>
+      <li><a href="#backend-platform">Backend: rate limits &amp; small fixes</a></li>
     </ol>
   </nav>
 </div>
@@ -569,35 +568,34 @@
       <div class="feature-title-wrap">
         <span class="tag new">New</span>
         <span class="tag">Mobile · Input</span>
-        <h2>Product catalogue input element</h2>
-        <p class="subtitle">A new mobile input that turns any view into a multi-select ordering surface — with categories, scanning, and live cart.</p>
+        <h2>Product catalogue input</h2>
+        <p class="subtitle">A new mobile element for letting users pick products and place an order.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
         <p>
-          The mobile app gets a brand-new <strong><code>product_catalogue</code> input</strong> — a full ordering surface you can drop into any view. Pick products, filter by category, scan barcodes, and watch the cart update live. This was previously just <code>catalogue</code>; it has been renamed and rebuilt around multi-select ordering as the primary flow.
+          You can now add a <strong>product catalogue</strong> to any mobile view. Users can browse products, pick more than one, set quantities, and see their cart update as they go.
         </p>
 
-        <h3>What landed</h3>
+        <h3>What you get</h3>
         <ul>
-          <li><strong>Multi-select ordering</strong> with quantity per product, replacing the old single-pick behaviour.</li>
-          <li><strong>Category filtering &amp; summary screen</strong> with improved validation, so users see what's selected before submitting.</li>
-          <li><strong>Dedicated scanner screen</strong> with camera controls — torch, focus, and continuous scanning.</li>
-          <li><strong>Required validation</strong> on the catalogue input plus a live cart-state display so the form state is always visible.</li>
-          <li><strong>Entry-point UI refactor</strong> and a card-component redesign paired with the matching web release.</li>
-          <li><strong>Docs renamed</strong> — every reference from <code>catalogue</code> to <code>product_catalogue</code>.</li>
+          <li><strong>Pick multiple products</strong> with quantities (the old version only allowed picking one).</li>
+          <li><strong>Filter by category</strong> and review everything in a summary screen before submitting.</li>
+          <li><strong>Barcode scanner</strong> with camera controls — torch, focus, and keep-scanning mode.</li>
+          <li><strong>Required check</strong> — the form won't submit if no product is chosen.</li>
+          <li><strong>Live cart</strong> always visible at the bottom so users know what they've picked.</li>
         </ul>
 
         <div class="callout">
           <span class="label">Heads up</span>
-          Anything that referenced the old <code>catalogue</code> element type needs to be updated to <code>product_catalogue</code>. Existing views won't auto-migrate — flag any failing references during QA.
+          The element used to be called <code>catalogue</code>. It is now <code>product_catalogue</code>. Old views that use the old name will need updating — they won't change on their own.
         </div>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Scan flow, category filter, multi-select with quantity, cart updates, required validation blocking submit when empty, and renamed <code>product_catalogue</code> references in existing views.</span>
+          <span class="test-text">Scan a barcode, filter by category, pick multiple products, change quantities, try to submit with an empty cart (should be blocked), and check that old views using <code>catalogue</code> get flagged.</span>
         </div>
       </div>
     </div>
@@ -612,33 +610,33 @@
       <div class="feature-title-wrap">
         <span class="tag">Mobile · Web</span>
         <span class="tag">Improvement</span>
-        <h2>Chat: multi-capture, attachments &amp; ordering</h2>
-        <p class="subtitle">Image attachments land properly on mobile; web fixes scroll-to-bottom and message ordering.</p>
+        <h2>Chat: photos work, messages stay in order</h2>
+        <p class="subtitle">Mobile users can now attach photos. The web chat scrolls and orders messages correctly.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
         <p>
-          The chat widget had a focused week across both platforms. <strong>Mobile</strong> picks up real attachment support; <strong>web</strong> ships reliability fixes for the long-running scroll and ordering issues.
+          Chat got fixes on both mobile and web this week.
         </p>
 
-        <h3>Mobile</h3>
+        <h3>On mobile</h3>
         <ul>
-          <li><strong>Multi-capture camera screen</strong> — capture multiple photos in one flow and attach them as a single message.</li>
-          <li><strong>Redesigned attachment UI</strong> for previewing and removing photos before sending.</li>
-          <li><strong>Documented <code>inputData</code> format</strong> for attachments so views and queries can read attachment URLs reliably.</li>
+          <li><strong>Take multiple photos in one go</strong> and send them all in a single message.</li>
+          <li><strong>Better preview</strong> — see your photos and remove any of them before sending.</li>
+          <li><strong>Photos are saved in a format other widgets can read</strong>, so you can show attached images elsewhere in the app.</li>
         </ul>
 
-        <h3>Web</h3>
+        <h3>On web</h3>
         <ul>
-          <li><strong>Scroll-to-bottom reliability</strong> — the message list now actually stays pinned to the latest message; image-heavy threads no longer break the layout.</li>
-          <li><strong>Message sort &amp; dedup refactor</strong> — out-of-order arrivals are placed correctly and duplicate messages no longer appear when a thread reloads.</li>
+          <li><strong>Chat now stays scrolled to the latest message</strong> — image-heavy chats no longer break the layout.</li>
+          <li><strong>Messages show in the right order</strong> and duplicate messages no longer appear when the chat reloads.</li>
         </ul>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Mobile: multi-capture, attachment preview/remove, send with multiple images, attachment URLs visible via <code>inputData</code>. Web: scroll-to-bottom after image load, message ordering after reconnect, dedup across rapid loads.</span>
+          <span class="test-text">Mobile: take many photos, remove some, send the rest. Web: open a busy chat with images, check that it scrolls to the bottom, refresh, and confirm there are no duplicates or out-of-order messages.</span>
         </div>
       </div>
     </div>
@@ -653,29 +651,29 @@
       <div class="feature-title-wrap">
         <span class="tag">Mobile · Payments</span>
         <span class="tag">Security</span>
-        <h2>Tap to Pay — server-side token fetching</h2>
-        <p class="subtitle">The Stripe Terminal flow now mints connection tokens on the backend. The mobile never sees the secret key.</p>
+        <h2>Tap to Pay — safer setup</h2>
+        <p class="subtitle">The Stripe secret key now lives on the server, not the phone.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
         <p>
-          Following last week's Tap to Pay launch, the connection-token path has been <strong>fully migrated server-side</strong>. The mobile app no longer holds or fetches the Stripe secret — it asks the backend for a token, and the backend resolves the secret reference and talks to Stripe.
+          Last week we launched Tap to Pay. This week we made it <strong>safer</strong>. The Stripe secret key used to be sent to the mobile app. Now the mobile app asks our server for a one-time token, and the server talks to Stripe instead.
         </p>
 
         <p>
-          Functionally nothing changes for end users; security posture changes meaningfully. A network inspector on a tampered device cannot now leak <code>sk_*</code>.
+          For the user, nothing changes — payments work the same way. The change is invisible. But if someone tampered with a phone before, they could try to read the Stripe key. They can't anymore.
         </p>
 
         <div class="callout">
           <span class="label">QA blocker</span>
-          This is a security-sensitive migration. <strong>Verify Tap to Pay still completes end-to-end on a prod-like config</strong> — both the simulator path and a real device. A regression here is a hard block on release.
+          This is a security-sensitive change. <strong>Test the full Tap to Pay flow end-to-end on a real device</strong> before release. A bug here blocks the release.
         </div>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Real-device Tap to Pay end-to-end, simulator path, network inspection confirming no <code>sk_*</code> leaves the backend, and graceful handling when the secret reference is misconfigured.</span>
+          <span class="test-text">Tap to Pay on a real device (start to finish), test the simulator mode too, and confirm the secret key never appears in network traffic from the phone.</span>
         </div>
       </div>
     </div>
@@ -691,23 +689,28 @@
         <span class="tag new">New</span>
         <span class="tag">Mobile · Portal</span>
         <h2>Offline mode</h2>
-        <p class="subtitle">Mobile picks up offline support, with a portal toggle to opt apps in.</p>
+        <p class="subtitle">Field users can keep working without internet. Forms send out once they're back online.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
         <p>
-          The mobile app now supports an <strong>offline mode</strong> for field users who lose connectivity mid-shift. Cached data continues to render and form submissions are queued locally, sync resumes when the device comes back online.
+          The mobile app now has an <strong>offline mode</strong>. If a user loses internet in the field, they can still:
         </p>
+        <ul>
+          <li>See data that was already loaded.</li>
+          <li>Fill in and save forms — the app holds them locally.</li>
+          <li>When the phone gets back online, the saved forms send automatically.</li>
+        </ul>
 
         <p>
-          Offline mode is per-app and <strong>opt-in</strong> from the portal. Apps that aren't whitelisted behave exactly as before. The portal toggle and the mobile feature shipped together so they can be tested end-to-end.
+          Offline mode is <strong>off by default</strong>. You have to turn it on for each app from the portal. Apps that aren't turned on behave exactly like before.
         </p>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Toggle on in portal → app reads cached views offline → form submissions queue → device returns online → queued mutations flush. Also test that a non-whitelisted app still requires network as before.</span>
+          <span class="test-text">Turn it on in the portal, put the phone in airplane mode, browse cached views, fill in a form, then come back online and check the form is sent. Also check that an app where it's turned off still needs internet.</span>
         </div>
       </div>
     </div>
@@ -722,27 +725,27 @@
       <div class="feature-title-wrap">
         <span class="tag">Web · Auth</span>
         <span class="tag">Improvement</span>
-        <h2>Deep links &amp; URL query args</h2>
-        <p class="subtitle">Logged-out users now land where they were going. Query strings flow into view arguments.</p>
+        <h2>Login lands you where you wanted to go</h2>
+        <p class="subtitle">Plus: URL settings like <code>?foo=bar</code> now reach the view automatically.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
         <p>
-          Two related fixes to the way the web app handles URLs:
+          Two small but useful URL fixes:
         </p>
 
         <h3>What's new</h3>
         <ul>
-          <li><strong>Deep links survive login.</strong> Hit a protected URL while logged out, get redirected to login, and after authenticating you land on the <em>original</em> URL — not the dashboard.</li>
-          <li><strong>URL query parameters populate view arguments.</strong> Pass <code>?foo=bar</code> on a view URL and <code>{{arguments.foo}}</code> resolves to <code>bar</code> inside that view — no extra config needed.</li>
-          <li><strong>Registry-backed API key management</strong> — API keys are now driven by the integration registry instead of hardcoded paths, paving the way for tenant-managed keys.</li>
+          <li><strong>Logging in keeps you on the right page.</strong> Open a page that needs login while logged out. You get sent to the login screen. After logging in, you land on the original page — not the dashboard.</li>
+          <li><strong>URL settings reach the view.</strong> If your URL has <code>?foo=bar</code>, the view can read <code>foo</code> straight from arguments. No setup needed.</li>
+          <li><strong>API keys come from a registry now</strong> instead of being hardcoded. This sets us up to let customers manage their own keys soon.</li>
         </ul>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Open a protected URL in a private window, complete login, confirm you land on the original URL. Pass <code>?key=value</code> on a view URL and confirm the matching argument is populated. Confirm API key registry list and create/rotate flows work end-to-end.</span>
+          <span class="test-text">Open a protected URL in a private window, log in, and check you land on the original URL. Try a URL with <code>?key=value</code> and confirm the view receives it. Try creating and rotating an API key.</span>
         </div>
       </div>
     </div>
@@ -757,24 +760,24 @@
       <div class="feature-title-wrap">
         <span class="tag new">New</span>
         <span class="tag">Web · Navigation</span>
-        <h2>Back-navigation refresh queue</h2>
-        <p class="subtitle">Mutations on a detail view now propagate back to the list automatically.</p>
+        <h2>Lists refresh after you edit something</h2>
+        <p class="subtitle">No more stale lists. Edit on the detail page, hit back, and the list updates.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
         <p>
-          When you navigate from a list to a detail view, change something, and hit back, the parent list now <strong>re-fetches automatically</strong>. No more stale rows that require a manual page refresh to reflect the change you just made.
+          Before this week, you'd open a list, click into a row, change the status, hit back — and the list still showed the old status. You had to refresh the whole page. Annoying.
         </p>
 
         <p>
-          Under the hood, navigation maintains a small <strong>pending refresh queue</strong> — keys that were mutated downstream get queued for re-fetch on return. The queue is flushed on the back transition.
+          Now the list <strong>updates on its own</strong> when you come back from a detail page where you changed something. No refresh needed.
         </p>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Navigate list → detail → mutate (update a status, change a name, delete a row) → hit back. The list should reflect the change without a hard reload. Try across both same-app and cross-app navigation.</span>
+          <span class="test-text">From a list, click into a row, change something (status, name, delete), hit back. The list should show the change without you refreshing. Try it across same-app and different-app navigation.</span>
         </div>
       </div>
     </div>
@@ -789,27 +792,31 @@
       <div class="feature-title-wrap">
         <span class="tag">Sheets</span>
         <span class="tag">Improvement</span>
-        <h2>AND/OR connectors for multi-rule filters</h2>
-        <p class="subtitle">Sheets filters now support mixed boolean logic, not just AND-stacks.</p>
+        <h2>Filters can now use AND <em>and</em> OR</h2>
+        <p class="subtitle">Build more flexible filters by mixing both connectors.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
         <p>
-          Building on last week's advanced filtering, Sheets now lets you <strong>compose filter rules with both AND and OR connectors</strong>. You can express predicates like <em>"status is open AND (priority is high OR assignee is me)"</em> directly in the filter UI.
+          Sheets filters used to only let you stack rules with AND — every rule had to be true. Now you can use <strong>AND <em>or</em> OR</strong> between rules.
+        </p>
+
+        <p>
+          That means you can ask for things like <em>"status is open AND (priority is high OR assignee is me)"</em> right from the filter UI.
         </p>
 
         <h3>What changed</h3>
         <ul>
-          <li>Each filter rule can be joined to the previous one with <strong>AND</strong> or <strong>OR</strong>.</li>
-          <li>Mixed AND+OR groups evaluate left-to-right with standard precedence — verify on complex filters with QA.</li>
-          <li>The filter chip row reflects the active boolean structure, so users can see what's being combined and how.</li>
+          <li>Each new rule can join the previous one with <strong>AND</strong> or <strong>OR</strong>.</li>
+          <li>The filter chips show how the rules are connected so you can see what's going on.</li>
+          <li>Clearing one rule keeps the others in place.</li>
         </ul>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Combined filter conditions, especially mixed AND+OR, with date and multi-select column types. Confirm filter chips reflect the boolean structure and clearing one rule preserves the rest.</span>
+          <span class="test-text">Try filters with only AND (should work like before), only OR, and mixed AND+OR. Test with date columns and dropdown columns. Clear one rule and check the others stay.</span>
         </div>
       </div>
     </div>
@@ -824,36 +831,36 @@
       <div class="feature-title-wrap">
         <span class="tag new">New</span>
         <span class="tag">Web · Widgets</span>
-        <h2>TieredOptions, ExpandableCard &amp; the HTML iframe refactor</h2>
-        <p class="subtitle">Two new widgets land. The HTML display widget gets rebuilt around iframes.</p>
+        <h2>Two new widgets + an HTML widget fix</h2>
+        <p class="subtitle">TieredOptions for pricing-style lists, ExpandableCard on web, and a big rebuild of HTML display.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
-        <p>
-          A meaningful widget release — two new widgets and a major refactor under the existing <code>html_display</code> element.
-        </p>
 
         <h3>New widgets</h3>
         <ul>
-          <li><strong>TieredOptions</strong> — a pricing/plan selector with stacked tiers. Designed for plan-picker, package-selection, or any one-of-N comparison surface.</li>
-          <li><strong>ExpandableCard</strong> on web — mirrors the new mobile ExpandableCard widget for consistent UX across platforms. Syntax and logic refined further this week.</li>
+          <li><strong>TieredOptions</strong> — a layout for picking one option from a few tiers. Good for plan pickers, package choices, or any "pick one of these" screen.</li>
+          <li><strong>ExpandableCard</strong> — a card that opens and closes. The mobile app got it last week; the web version is here now so both platforms look the same.</li>
         </ul>
 
-        <h3>HTML display — iframe refactor</h3>
+        <h3>HTML display widget — rebuilt</h3>
         <p>
-          The <code>html_display</code> widget has been <strong>refactored to render inside an iframe</strong> as a platform view with explicit DOM-mutation handling. This isolates embedded HTML from the host page's styles and scripts and fixes a class of layout-bleed bugs that were affecting both web and mobile.
+          The HTML display widget had a problem: the HTML you put inside it would sometimes pick up styles from the rest of the page, and vice versa. Things looked broken.
+        </p>
+        <p>
+          It's now wrapped in an <strong>iframe</strong> — a sealed box for the HTML — so the embedded content stays separate from the host page. This fixes a class of layout bugs on both web and mobile.
         </p>
 
         <h3>Polish</h3>
         <ul>
-          <li><strong>Text reactivity</strong> optimization plus explicit data refresh — fewer unnecessary re-renders, but explicit refresh hooks where you need them.</li>
+          <li><strong>Text widgets re-render less often</strong>, so screens feel snappier. You can also force a refresh when you actually need one.</li>
         </ul>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Any view embedding HTML content — verify rendering, scroll behaviour, and styling on both web and mobile (the iframe refactor is the highest-risk piece). Smoke-test TieredOptions selection flows. Confirm ExpandableCard parity between web and mobile.</span>
+          <span class="test-text">Any view that uses HTML display — check it on both web and mobile (this is the biggest change). Try TieredOptions selection. Confirm ExpandableCard works the same on web as on mobile.</span>
         </div>
       </div>
     </div>
@@ -868,122 +875,80 @@
       <div class="feature-title-wrap">
         <span class="tag">Web · Admin</span>
         <span class="tag">Improvement</span>
-        <h2>Team members dialog — search added</h2>
-        <p class="subtitle">Finding the right teammate in a large org is now actually possible.</p>
+        <h2>Team members — search added</h2>
+        <p class="subtitle">Type a name or email to find someone. No more scrolling through long lists.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
         <p>
-          The team members dialog now has a <strong>search input</strong>. Type a name or email and the member list filters live. Useful in tenants with 50+ users where scrolling the full list is slow.
+          The team members popup now has a <strong>search box</strong>. Type a name or email and the list filters as you type. Useful when your team has more than a handful of people.
         </p>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Search by name and by email, empty-state when nothing matches, and the clear-search behaviour returning to the full list.</span>
+          <span class="test-text">Search by name, search by email, check the empty state when nothing matches, and clear the search to get the full list back.</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== J. QuickBooks → Nango ===== -->
-<section class="feature" id="quickbooks-nango">
+<!-- ===== J. Backend Platform ===== -->
+<section class="feature" id="backend-platform">
   <div class="container">
     <div class="feature-head">
       <div class="feature-num">J / 10</div>
       <div class="feature-title-wrap">
-        <span class="tag">Integrations</span>
-        <span class="tag">Migration</span>
-        <h2>QuickBooks → Nango migration</h2>
-        <p class="subtitle">QB moves off our custom OAuth onto the Nango integration platform — and the old gateway goes away.</p>
-      </div>
-    </div>
-    <div class="feature-body">
-      <div class="spacer"></div>
-      <div class="feature-content">
-        <p>
-          QuickBooks now flows through <strong>Nango</strong> for OAuth and webhook routing instead of the custom plumbing we shipped two weeks ago. The custom QuickBooks gateway and routing infrastructure have been removed across the stack.
-        </p>
-
-        <h3>What was touched</h3>
-        <ul>
-          <li><strong>Main backend</strong> — Nango proxy added for OAuth + webhook routing; old QuickBooks gateway and routing infrastructure removed.</li>
-          <li><strong>Node backend</strong> — QuickBooks migrated from custom OAuth to the Nango platform.</li>
-          <li><strong>Web app</strong> — QuickBooks integration removed from the web app surface (it's now driven entirely via Nango).</li>
-          <li><strong>Portal</strong> — hardcoded QuickBooks integration label removed. Connected integrations now render from the registry.</li>
-        </ul>
-
-        <div class="callout">
-          <span class="label">QA blocker</span>
-          The custom QB path is gone — any regression here is a hard block. Run the <strong>full end-to-end QuickBooks flow via Nango</strong>: connect → push customer → push invoice → pull payment.
-        </div>
-
-        <div class="test-block">
-          <span class="test-label">What to test</span>
-          <span class="test-text">QuickBooks connect/disconnect, push customer, push invoice, pull payment confirmation via webhook — all via Nango. Confirm the Portal integration list renders from the registry rather than the removed hardcoded label.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== K. Backend Platform ===== -->
-<section class="feature" id="backend-platform">
-  <div class="container">
-    <div class="feature-head">
-      <div class="feature-num">K / 11</div>
-      <div class="feature-title-wrap">
         <span class="tag">Backend</span>
         <span class="tag">Platform</span>
-        <h2>Rate limits, regions &amp; cross-cutting polish</h2>
-        <p class="subtitle">Per-key rate limiting, public-access file uploads, India region config, and a long list of small improvements.</p>
+        <h2>Rate limits, India region &amp; small fixes</h2>
+        <p class="subtitle">A bunch of smaller backend and web improvements.</p>
       </div>
     </div>
     <div class="feature-body">
       <div class="spacer"></div>
       <div class="feature-content">
 
-        <h3>Node backend</h3>
+        <h3>Backend</h3>
         <ul>
-          <li><strong>Per-key rate limiting</strong> on external API endpoints — one noisy key gets 429'd without affecting others.</li>
-          <li><strong>File-upload endpoint</strong> added to the public-access token allowlist.</li>
-          <li><strong>India-region config</strong> — DB and server config updated for the IN cluster.</li>
+          <li><strong>One noisy API key won't slow down the others.</strong> Rate limits now apply per key, not across all of them.</li>
+          <li><strong>File uploads work with public-access tokens</strong> — public-access users can upload files now.</li>
+          <li><strong>India region setup</strong> — database and server settings updated for the IN cluster.</li>
         </ul>
 
-        <h3>Web app — small fixes</h3>
+        <h3>Small web fixes</h3>
         <ul>
-          <li><strong>Signature input</strong> — error text now clears as soon as a signature is captured.</li>
-          <li><strong>Validator</strong> — gutter/row validation correctly uses the parent context.</li>
-          <li><strong>Image upload</strong> — dismissing the upload dialog no longer triggers an unintended navigation.</li>
-          <li><strong>Calendar header</strong> cleanup and removal of unused code.</li>
-          <li><strong>App config</strong> — offline-mode toggle for mobile apps, env switched to staging plus image visibility-condition fix. <em>QA: confirm the staging env switch is NOT in the release build going to prod.</em></li>
-          <li><strong>Public app API</strong> — refactored to recursively walk the compiled data tree and collect SQL queries for access control.</li>
+          <li><strong>Signature input</strong> — the error message clears once you've drawn a signature.</li>
+          <li><strong>Image upload</strong> — closing the upload dialog no longer accidentally moves you to another page.</li>
+          <li><strong>Form validation</strong> — gutter and row validation correctly looks at the right parent.</li>
+          <li><strong>Calendar header</strong> cleaned up.</li>
+          <li><strong>Offline mode toggle</strong> shows up in the app config (for the new mobile feature).</li>
+          <li><strong>Image visibility condition</strong> fix.</li>
         </ul>
 
-        <h3>Mobile platform &amp; build</h3>
+        <h3>Mobile platform</h3>
         <ul>
-          <li><strong>iOS bumped to 1.0.15</strong> with Bluetooth permissions added.</li>
-          <li><strong>macOS platform target</strong> + CocoaPods integration fix.</li>
-          <li><strong>Structured request/response API logging</strong> and query logging for API calls in staging mode.</li>
-          <li><strong>Progress dialog handling</strong> + query logging fix in mid-flight chains.</li>
-          <li><strong>ExpandableCard widget</strong> on mobile (paired with the web release in section H).</li>
+          <li><strong>iOS bumped to 1.0.15</strong>, Bluetooth permissions added.</li>
+          <li><strong>macOS</strong> build fix.</li>
+          <li><strong>Better in-app logging</strong> — see API calls and queries in staging.</li>
+          <li><strong>ExpandableCard</strong> widget (mobile half of widget H).</li>
         </ul>
 
         <h3>Docs site</h3>
         <ul>
-          <li><strong>Command palette ⌘K</strong> for doc navigation — search and jump anywhere in the docs.</li>
+          <li><strong>⌘K / Ctrl+K command palette</strong> — quick search and jump around the docs.</li>
         </ul>
 
         <div class="callout">
           <span class="label">Release gate</span>
-          Confirm webv4 env is <strong>not pinned to staging</strong> in the QA/release build going to prod. The staging switch landed mid-week and needs to be reverted for the production cut.
+          The web app's environment was switched to staging mid-week for testing. <strong>Make sure the production build is NOT set to staging</strong> before release.
         </div>
 
         <div class="test-block">
           <span class="test-label">What to test</span>
-          <span class="test-text">Hammer one API key → confirm 429s; confirm separate keys aren't co-limited. Public-access JWT can hit file upload; other endpoints still rejected. India-region smoke test. Confirm prod build is NOT staging-env. Doc palette ⌘K opens, searches, and navigates.</span>
+          <span class="test-text">Hit one API key hard — confirm you get 429s and that a second key isn't blocked. Confirm public-access tokens can upload files. Run smoke tests on the IN cluster. Confirm the production build isn't pinned to staging. Try ⌘K in the docs.</span>
         </div>
       </div>
     </div>
@@ -996,7 +961,7 @@
     <span class="upcoming-label">✓ Suggested smoke-test list</span>
     <h2>Top <em>priorities</em> for QA.</h2>
     <p class="intro">
-      Sequenced by risk and blast radius. Items 1–4 are release-blocking — start there.
+      Sorted by risk. Start at the top — items marked P0 must pass before release.
     </p>
 
     <div class="upcoming-grid">
@@ -1004,154 +969,139 @@
       <!-- Card 1 -->
       <div class="upcoming-card">
         <span class="tag">P0</span>
-        <span class="tag preview">Integration</span>
-        <h3>QuickBooks via Nango</h3>
-        <p class="subtitle">The full end-to-end loop — highest risk this release.</p>
+        <span class="tag preview">Payments</span>
+        <h3>Tap to Pay end-to-end</h3>
+        <p class="subtitle">Security-sensitive change to how Stripe is set up.</p>
         <ul>
-          <li>Connect &amp; disconnect</li>
-          <li>Push customer &amp; invoice</li>
-          <li>Pull payment via webhook</li>
-          <li>Confirm the old custom-OAuth path is fully gone</li>
+          <li>Simulator path works</li>
+          <li>Real device works</li>
+          <li>No Stripe key visible in phone network traffic</li>
+          <li>Misconfigured key shows a clear error</li>
         </ul>
       </div>
 
       <!-- Card 2 -->
       <div class="upcoming-card">
         <span class="tag">P0</span>
-        <span class="tag preview">Payments</span>
-        <h3>Tap to Pay — server-side tokens</h3>
-        <p class="subtitle">Security-sensitive migration.</p>
+        <span class="tag preview">Public access</span>
+        <h3>Public-access apps + file uploads</h3>
+        <p class="subtitle">File uploads were just added to the public-access list.</p>
         <ul>
-          <li>Simulator path</li>
-          <li>Real device — Tap to Pay end-to-end</li>
-          <li>Network inspection: no <code>sk_*</code> leaving backend</li>
-          <li>Misconfigured secret-name error handling</li>
+          <li>Public-access view loads</li>
+          <li>File upload works with public token</li>
+          <li>Other endpoints still rejected</li>
         </ul>
       </div>
 
       <!-- Card 3 -->
       <div class="upcoming-card">
         <span class="tag">P0</span>
-        <span class="tag preview">Public access</span>
-        <h3>Public-access app + uploads</h3>
-        <p class="subtitle">Confirm scope is unchanged after the file-upload allowlist addition.</p>
+        <span class="tag preview">Release gate</span>
+        <h3>Production build is NOT staging</h3>
+        <p class="subtitle">The env was flipped mid-week for testing.</p>
         <ul>
-          <li>Public-access view loads</li>
-          <li>File upload via public-access JWT works</li>
-          <li>Other endpoints still rejected</li>
-          <li>No over- or under-permissive query rejection</li>
+          <li>Check the production build's environment</li>
+          <li>Block release if it's still on staging</li>
         </ul>
       </div>
 
       <!-- Card 4 -->
       <div class="upcoming-card">
-        <span class="tag">P0</span>
-        <span class="tag preview">Release gate</span>
-        <h3>Confirm prod env is NOT staging</h3>
-        <p class="subtitle">A mid-week env flip landed in webv4-main.</p>
+        <span class="tag">P1</span>
+        <span class="tag preview">Mobile</span>
+        <h3>Product catalogue</h3>
+        <p class="subtitle">New element with several flows.</p>
         <ul>
-          <li>Verify the QA/release build is NOT pinned to staging</li>
-          <li>Block release if the staging switch is still in</li>
+          <li>Barcode scan</li>
+          <li>Category filter</li>
+          <li>Multi-select with cart</li>
+          <li>Submitting an empty cart is blocked</li>
         </ul>
       </div>
 
       <!-- Card 5 -->
       <div class="upcoming-card">
         <span class="tag">P1</span>
-        <span class="tag preview">Mobile</span>
-        <h3>Product catalogue input</h3>
-        <p class="subtitle">New element, multi-touch surface.</p>
+        <span class="tag preview">Web</span>
+        <h3>Login &amp; URL handling</h3>
+        <p class="subtitle">Deep-link survival + URL settings.</p>
         <ul>
-          <li>Scan flow</li>
-          <li>Category filter</li>
-          <li>Multi-select with cart</li>
-          <li>Required validation</li>
+          <li>Protected URL → login → land back on original URL</li>
+          <li><code>?foo=bar</code> reaches the view</li>
         </ul>
       </div>
 
       <!-- Card 6 -->
       <div class="upcoming-card">
         <span class="tag">P1</span>
-        <span class="tag preview">Web</span>
-        <h3>Auth &amp; URL handling</h3>
-        <p class="subtitle">Deep-link preservation + URL query args.</p>
+        <span class="tag preview">Sheets</span>
+        <h3>AND / OR filters</h3>
+        <p class="subtitle">Mixed boolean filters.</p>
         <ul>
-          <li>Protected URL → login → land on original URL</li>
-          <li><code>?foo=bar</code> populates <code>{{arguments.foo}}</code></li>
+          <li>Pure AND chains (regression check)</li>
+          <li>Pure OR chains</li>
+          <li>Mixed AND+OR with date and dropdown columns</li>
         </ul>
       </div>
 
       <!-- Card 7 -->
       <div class="upcoming-card">
         <span class="tag">P1</span>
-        <span class="tag preview">Sheets</span>
-        <h3>Filter AND/OR</h3>
-        <p class="subtitle">Mixed boolean logic in multi-rule filters.</p>
+        <span class="tag preview">Backend</span>
+        <h3>Per-API-key rate limit</h3>
+        <p class="subtitle">One key shouldn't block others.</p>
         <ul>
-          <li>Pure AND chains (regression check)</li>
-          <li>Pure OR chains</li>
-          <li>Mixed AND+OR with date and multi-select columns</li>
+          <li>Hammer one key → 429s on that key only</li>
+          <li>Confirm a second key is unaffected</li>
         </ul>
       </div>
 
       <!-- Card 8 -->
       <div class="upcoming-card">
-        <span class="tag">P1</span>
-        <span class="tag preview">Backend</span>
-        <h3>Per-API-key rate limit</h3>
-        <p class="subtitle">Isolation between keys.</p>
+        <span class="tag">P2</span>
+        <span class="tag preview">Chat</span>
+        <h3>Chat widget</h3>
+        <p class="subtitle">Mobile photos + web ordering.</p>
         <ul>
-          <li>Hammer one key → 429 behaviour</li>
-          <li>Confirm separate keys aren't co-limited</li>
+          <li>Multi-capture, preview, send</li>
+          <li>Web: scroll-to-bottom, ordering, no duplicates</li>
         </ul>
       </div>
 
       <!-- Card 9 -->
       <div class="upcoming-card">
         <span class="tag">P2</span>
-        <span class="tag preview">Chat</span>
-        <h3>Chat widget</h3>
-        <p class="subtitle">Mobile attachments + web ordering.</p>
+        <span class="tag preview">Widgets</span>
+        <h3>HTML display widget</h3>
+        <p class="subtitle">Biggest widget change this week.</p>
         <ul>
-          <li>Multi-capture, attachment preview, send</li>
-          <li>Web: scroll-to-bottom, message ordering, dedup</li>
+          <li>Web rendering &amp; scroll</li>
+          <li>Mobile rendering &amp; scroll</li>
+          <li>Host page styles don't leak in</li>
         </ul>
       </div>
 
       <!-- Card 10 -->
       <div class="upcoming-card">
         <span class="tag">P2</span>
-        <span class="tag preview">Widgets</span>
-        <h3>HTML display — iframe refactor</h3>
-        <p class="subtitle">Any view embedding HTML content.</p>
+        <span class="tag preview">Navigation</span>
+        <h3>List refresh after edits</h3>
+        <p class="subtitle">Detail-page mutations should reach the list.</p>
         <ul>
-          <li>Web rendering &amp; scroll</li>
-          <li>Mobile rendering &amp; scroll</li>
-          <li>No host-page style bleed into the iframe</li>
+          <li>List → detail → edit → back</li>
+          <li>List shows the change without a hard refresh</li>
         </ul>
       </div>
 
       <!-- Card 11 -->
       <div class="upcoming-card">
         <span class="tag">P2</span>
-        <span class="tag preview">Navigation</span>
-        <h3>Back-navigation refresh queue</h3>
-        <p class="subtitle">Stale lists should auto-update after mutations on detail views.</p>
-        <ul>
-          <li>List → detail → mutate → back</li>
-          <li>Confirm the list reflects the change without manual refresh</li>
-        </ul>
-      </div>
-
-      <!-- Card 12 -->
-      <div class="upcoming-card">
-        <span class="tag">P2</span>
         <span class="tag preview">Admin</span>
         <h3>Team members search</h3>
-        <p class="subtitle">Dialog search.</p>
+        <p class="subtitle">Quick check on the new search box.</p>
         <ul>
           <li>Search by name and email</li>
-          <li>Empty-state and clear-search behaviour</li>
+          <li>Empty state and clear-search</li>
         </ul>
       </div>
 
@@ -1163,7 +1113,7 @@
 <!-- ========== END WEEK: May 14 – May 21, 2026 ========== -->
 
 
-<!-- ========== WEEK: May 8 – May 14, 2026 (link to previous) ========== -->
+<!-- ========== Link to previous week ========== -->
 <section class="week" id="week-2026-05-14-link">
 
   <div class="week-divider">
@@ -1175,7 +1125,7 @@
       <div class="kicker">Product Release Notes</div>
       <h1>Updates from <em>last</em> week.</h1>
       <p class="lede">
-        For the May 8 → May 14 changelog — Portal RBAC, Tap to Pay launch, JSON preview &amp; undo, Sheets filters, mobile v3 — see the previous release notes.
+        For the May 8 → May 14 notes — Portal team management, Tap to Pay launch, JSON preview &amp; undo, Sheets filters, mobile v3 — see the previous page.
       </p>
       <div class="meta">
         <div>
